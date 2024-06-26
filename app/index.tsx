@@ -3,10 +3,31 @@ import React, { useEffect, useState } from "react";
 import { Button, Image, View } from "native-base";
 import gavelImg from "@/assets/images/gavel.png";
 import PlusOne from "@/components/PlusOne";
+import { Sound } from "expo-av/build/Audio";
+import { Audio } from "expo-av";
+
+const TIMER_COUNT = 2;
 
 const Home = () => {
 	const [arr, setArr] = useState<string[]>([]);
-	const [timerCount, setTimer] = useState<number>(2);
+	const [_, setTimer] = useState<number>(TIMER_COUNT);
+	const [audio, setAudio] = useState<Sound>();
+
+	const loadSound = async () => {
+		const { sound } = await Audio.Sound.createAsync(
+			require("@/assets/gavel-sfx.wav")
+		);
+		setAudio(sound);
+	};
+
+	const handleHit = () => {
+		audio?.replayAsync();
+		setArr((prev) => [...prev, uuid()]);
+	};
+
+	useEffect(() => {
+		loadSound();
+	}, []);
 
 	useEffect(() => {
 		if (!arr.length) return;
@@ -14,14 +35,13 @@ const Home = () => {
 			setTimer((prev) => {
 				if (prev === 0) {
 					setArr([]);
-					return 2;
+					return TIMER_COUNT;
 				} else {
 					return prev - 1;
 				}
 			});
 		}, 1000); //each count lasts for a second
-		//cleanup the interval on complete
-		return () => clearInterval(interval);
+		return () => clearInterval(interval); //cleanup the interval on complete
 	}, [arr]);
 
 	return (
@@ -36,10 +56,7 @@ const Home = () => {
 				size={"lg"}
 				borderRadius={10}
 				colorScheme="secondary"
-				onPress={() => {
-					setArr((prev) => [...prev, uuid()]);
-					// setTimer(5);
-				}}
+				onPress={handleHit}
 			>
 				ORDER! ORDER!
 			</Button>
