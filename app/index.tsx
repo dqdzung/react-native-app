@@ -2,18 +2,16 @@ import { StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button, Image, View } from "native-base";
 import gavelImg from "@/assets/images/gavel.png";
-// import pointing from "@/assets/images/pointing.gif";
 import PlusOne from "@/components/PlusOne";
 import { Sound } from "expo-av/build/Audio";
 import { Audio } from "expo-av";
 import { Image as ExpoImage } from "expo-image";
 
-const TIMER_COUNT = 2;
-
 const Home = () => {
 	const [arr, setArr] = useState<string[]>([]);
 	const [_, setTimer] = useState<number>(TIMER_COUNT);
 	const [audio, setAudio] = useState<Sound>();
+	const [init, setInit] = useState(false);
 
 	const loadSound = async () => {
 		const { sound } = await Audio.Sound.createAsync(
@@ -29,11 +27,14 @@ const Home = () => {
 
 	useEffect(() => {
 		loadSound();
+		setTimeout(() => {
+			setInit(true);
+		}, 3000);
 	}, []);
 
 	useEffect(() => {
 		if (!arr.length) return;
-		let interval = setInterval(() => {
+		const interval = setInterval(() => {
 			setTimer((prev) => {
 				if (prev === 0) {
 					setArr([]);
@@ -52,15 +53,33 @@ const Home = () => {
 				<PlusOne key={uuid} />
 			))}
 
-			<ExpoImage
-				source={{ uri: "https://tenor.com/4kxT.gif" }}
-				alt="pointing.gif"
-			/>
+			{init && arr.length === 0 && (
+				<View
+					style={{
+						flexDirection: "row",
+						justifyContent: "space-between",
+						position: "absolute",
+						width: "100%",
+						top: 200,
+					}}
+				>
+					<ExpoImage
+						source={PW_GIF}
+						style={styles.image}
+						transition={IMAGE_TRANSITION}
+					/>
+					<ExpoImage
+						source={ME_GIF}
+						style={styles.image}
+						transition={IMAGE_TRANSITION}
+					/>
+				</View>
+			)}
 
 			<Image source={gavelImg} alt="gavel.png" size="xl" />
 
 			<Button
-				size={"lg"}
+				size="lg"
 				borderRadius={10}
 				colorScheme="secondary"
 				onPress={handleHit}
@@ -80,7 +99,18 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		gap: 40,
 	},
+	image: {
+		aspectRatio: 1.65,
+		flex: 1,
+	},
 });
+
+const IMAGE_TRANSITION = 1000;
+const TIMER_COUNT = 2;
+const PW_GIF =
+	"https://media.tenor.com/XsuhQTQ2WGUAAAAi/ace-attorney-phoenix-wright.gif";
+const ME_GIF =
+	"https://media.tenor.com/CvjsQ6ZKg0cAAAAi/pointing-edgeworth.gif";
 
 const uuid = () => {
 	return "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
