@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Gavel Simulator",
-    "slug": "my-app",
+    "slug": "gavel-sim",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/gavel.png",
