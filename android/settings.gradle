@@ -1,4 +1,4 @@
-rootProject.name = 'my-app'
+rootProject.name = 'Gavel Simulator'
 
 dependencyResolutionManagement {
   versionCatalogs {
