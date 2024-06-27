@@ -6,7 +6,7 @@ import baseImg from "@/assets/images/AA-base.png";
 import PlusOne from "@/components/PlusOne";
 import { Sound } from "expo-av/build/Audio";
 import { Audio } from "expo-av";
-import { Image as ExpoImage } from "expo-image";
+import { Image as GifImage } from "expo-image";
 
 const Home = () => {
 	const [arr, setArr] = useState<string[]>([]);
@@ -30,15 +30,15 @@ const Home = () => {
 		setGallerySound(sound);
 	};
 
-	const moveUp = () => {
+	const gavelUp = () => {
 		Animated.timing(animatedValue, {
 			toValue: -80,
 			duration: 70,
 			useNativeDriver: false,
-		}).start(moveDown);
+		}).start(gavelDown);
 	};
 
-	const moveDown = () => {
+	const gavelDown = () => {
 		Animated.timing(animatedValue, {
 			toValue: -15,
 			duration: 10,
@@ -49,7 +49,7 @@ const Home = () => {
 	};
 
 	const handleHit = () => {
-		moveUp();
+		gavelUp();
 		gavelSound?.replayAsync();
 		gallerySound?.setIsLoopingAsync(false);
 		gallerySound?.stopAsync();
@@ -69,6 +69,13 @@ const Home = () => {
 				setInit(true);
 			}, 2000);
 		});
+
+		return () => {
+			gavelSound?.unloadAsync();
+			gallerySound?.unloadAsync();
+			setGavelSound(undefined);
+			setGallerySound(undefined);
+		};
 	}, []);
 
 	useEffect(() => {
@@ -86,15 +93,6 @@ const Home = () => {
 		return () => clearInterval(interval); //cleanup the interval on complete
 	}, [arr]);
 
-	useEffect(() => {
-		return () => {
-			gavelSound?.unloadAsync();
-			gallerySound?.unloadAsync();
-			setGavelSound(undefined);
-			setGallerySound(undefined);
-		};
-	}, []);
-
 	return (
 		<View style={styles.container}>
 			{arr.map((uuid) => (
@@ -102,21 +100,13 @@ const Home = () => {
 			))}
 
 			{isArguing && (
-				<View
-					style={{
-						flexDirection: "row",
-						justifyContent: "space-between",
-						position: "absolute",
-						width: "100%",
-						top: 210,
-					}}
-				>
-					<ExpoImage
+				<View style={styles.gifContainer}>
+					<GifImage
 						source={PW_GIF}
 						style={styles.image}
 						transition={IMAGE_TRANSITION}
 					/>
-					<ExpoImage
+					<GifImage
 						source={ME_GIF}
 						style={styles.image}
 						transition={IMAGE_TRANSITION}
@@ -132,37 +122,15 @@ const Home = () => {
 						transform: [{ translateY: animatedValue }],
 					}}
 				>
-					<Image
-						source={gavelImg}
-						alt="gavel"
-						style={{
-							position: "absolute",
-							left: -36,
-							height: 120,
-							width: 100,
-						}}
-					/>
+					<Image source={gavelImg} alt="gavel" style={styles.gavel} />
 				</Animated.View>
-				<Image
-					source={baseImg}
-					alt="base"
-					style={{
-						height: 110,
-						width: 200,
-						zIndex: 2,
-					}}
-				/>
+				<Image source={baseImg} alt="base" style={styles.gavelBase} />
 			</View>
 			<Button
 				size="md"
 				colorScheme="secondary"
 				onPress={handleHit}
-				style={{
-					width: 120,
-					borderRadius: 0,
-					borderBottomLeftRadius: 20,
-					borderBottomRightRadius: 20,
-				}}
+				style={styles.button}
 			>
 				ORDER!
 			</Button>
@@ -181,6 +149,30 @@ const styles = StyleSheet.create({
 	image: {
 		aspectRatio: 1.65,
 		flex: 1,
+	},
+	button: {
+		width: 120,
+		borderRadius: 0,
+		borderBottomLeftRadius: 20,
+		borderBottomRightRadius: 20,
+	},
+	gavel: {
+		position: "absolute",
+		left: -34,
+		height: 120,
+		width: 100,
+	},
+	gavelBase: {
+		height: 110,
+		width: 200,
+		zIndex: 2,
+	},
+	gifContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		position: "absolute",
+		width: "100%",
+		top: 210,
 	},
 });
 
