@@ -59,16 +59,16 @@ const Home = () => {
 
 	useEffect(() => {
 		if (!isArguing) return;
-		gallerySound?.playAsync();
+		gallerySound?.replayAsync();
 		gallerySound?.setIsLoopingAsync(true);
 	}, [isArguing]);
 
 	useEffect(() => {
-		loadGavelSound();
-		loadGallerySound();
-		setTimeout(() => {
-			setInit(true);
-		}, 2000);
+		Promise.all([loadGavelSound(), loadGallerySound()]).then(() => {
+			setTimeout(() => {
+				setInit(true);
+			}, 2000);
+		});
 	}, []);
 
 	useEffect(() => {
@@ -87,13 +87,13 @@ const Home = () => {
 	}, [arr]);
 
 	useEffect(() => {
-		return gavelSound
-			? () => {
-					gavelSound.unloadAsync();
-					setGavelSound(undefined);
-			  }
-			: undefined;
-	}, [gavelSound]);
+		return () => {
+			gavelSound?.unloadAsync();
+			gallerySound?.unloadAsync();
+			setGavelSound(undefined);
+			setGallerySound(undefined);
+		};
+	}, []);
 
 	return (
 		<View style={styles.container}>
