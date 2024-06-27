@@ -1,8 +1,8 @@
 import { Animated, StyleSheet } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 
-const START_POS = -120;
-const FINISH_POS = -200;
+const START_POS = -110;
+const FINISH_POS = -170;
 const DURATION = 300;
 const FADE_DELAY = 50;
 const SHOW = 1;
