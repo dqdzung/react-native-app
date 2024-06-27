@@ -2,9 +2,11 @@ import { StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button, Image, View } from "native-base";
 import gavelImg from "@/assets/images/gavel.png";
+// import pointing from "@/assets/images/pointing.gif";
 import PlusOne from "@/components/PlusOne";
 import { Sound } from "expo-av/build/Audio";
 import { Audio } from "expo-av";
+import { Image as ExpoImage } from "expo-image";
 
 const TIMER_COUNT = 2;
 
@@ -49,6 +51,11 @@ const Home = () => {
 			{arr.map((uuid) => (
 				<PlusOne key={uuid} />
 			))}
+
+			<ExpoImage
+				source={{ uri: "https://tenor.com/4kxT.gif" }}
+				alt="pointing.gif"
+			/>
 
 			<Image source={gavelImg} alt="gavel.png" size="xl" />
 
