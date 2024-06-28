@@ -1,6 +1,6 @@
-import { Animated, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Button, View } from "native-base";
+import { View } from "native-base";
 import PlusOne from "@/components/PlusOne";
 import GifSection from "@/components/GifSection";
 import Gavel from "@/components/Gavel";
