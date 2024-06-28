@@ -1,5 +1,7 @@
 import { Animated, StyleSheet } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
+import { Sound } from "expo-av/build/Audio";
+import { Audio } from "expo-av";
 
 const START_POS = -110;
 const FINISH_POS = -170;
@@ -12,6 +14,15 @@ const PlusOne = () => {
 	const animatedValue = useRef(new Animated.Value(START_POS)).current;
 	const [appeared, setAppear] = useState(false);
 	const [fadeAnim] = useState(new Animated.Value(0));
+	const [gavelSound, setGavelSound] = useState<Sound>();
+
+	const playSound = async () => {
+		const { sound } = await Audio.Sound.createAsync(
+			require("@/assets/gavel-sfx.wav")
+		);
+		sound?.playAsync();
+		setGavelSound(sound);
+	};
 
 	const moveUp = () => {
 		Animated.timing(animatedValue, {
@@ -41,7 +52,16 @@ const PlusOne = () => {
 	useEffect(() => {
 		moveUp();
 		fadeIn();
-	});
+		playSound();
+	}, []);
+
+	useEffect(() => {
+		return gavelSound
+			? () => {
+					gavelSound.unloadAsync();
+			}
+			: undefined;
+	}, [gavelSound]);
 
 	if (appeared) return null;
 
