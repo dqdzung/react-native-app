@@ -2,64 +2,60 @@ import { Animated, StyleSheet } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Sound } from "expo-av/build/Audio";
 import { Audio } from "expo-av";
-
-const START_POS = -110;
-const FINISH_POS = -170;
-const DURATION = 300;
-const FADE_DELAY = 50;
-const SHOW = 1;
-const HIDE = 0;
+import TIMINGS from "@/constants/Timings";
+import PATH from "@/constants/URLs";
 
 const PlusOne = () => {
-	const animatedValue = useRef(new Animated.Value(START_POS)).current;
+	const animatedValue = useRef(
+		new Animated.Value(TIMINGS.PLUS_ONE_START_POS)
+	).current;
 	const [appeared, setAppear] = useState(false);
-	const [fadeAnim] = useState(new Animated.Value(0));
+	const [fadeAnim] = useState(new Animated.Value(TIMINGS.HIDE));
 	const [gavelSound, setGavelSound] = useState<Sound>();
 
 	const playSound = async () => {
-		const { sound } = await Audio.Sound.createAsync(
-			require("@/assets/gavel-sfx.wav")
-		);
+		const { sound } = await Audio.Sound.createAsync(require(PATH.GAVEL_SFX));
 		sound?.playAsync();
 		setGavelSound(sound);
 	};
 
 	const moveUp = () => {
 		Animated.timing(animatedValue, {
-			toValue: FINISH_POS,
-			duration: DURATION,
+			toValue: TIMINGS.PLUS_ONE_FINISH_POS,
+			duration: TIMINGS.PLUS_ONE_DURATION,
 			useNativeDriver: false,
 		}).start(fadeOut);
 	};
 
 	const fadeIn = () => {
 		Animated.timing(fadeAnim, {
-			toValue: SHOW,
-			duration: DURATION,
+			toValue: TIMINGS.SHOW,
+			duration: TIMINGS.PLUS_ONE_DURATION,
 			useNativeDriver: false,
 		}).start();
 	};
 
 	const fadeOut = () => {
 		Animated.timing(fadeAnim, {
-			delay: FADE_DELAY,
-			toValue: HIDE,
-			duration: DURATION,
+			delay: TIMINGS.PLUS_ONE_FADE_DELAY,
+			toValue: TIMINGS.HIDE,
+			duration: TIMINGS.PLUS_ONE_DURATION,
 			useNativeDriver: false,
 		}).start(() => setAppear(true));
 	};
 
-	useEffect(() => {
+	const init = () => {
 		moveUp();
 		fadeIn();
 		playSound();
-	}, []);
+	};
 
+	useEffect(() => init(), []);
 	useEffect(() => {
 		return gavelSound
 			? () => {
 					gavelSound.unloadAsync();
-			}
+			  }
 			: undefined;
 	}, [gavelSound]);
 
@@ -68,15 +64,13 @@ const PlusOne = () => {
 	return (
 		<Animated.View
 			style={{
-				opacity: appeared ? HIDE : fadeAnim,
-				position: "absolute",
+				...styles.animationWrapper,
+				opacity: appeared ? TIMINGS.HIDE : fadeAnim,
 			}}
 		>
 			<Animated.Text
 				style={{
-					color: "#00D100",
-					fontSize: 35,
-					fontWeight: "bold",
+					...styles.text,
 					transform: [{ translateY: animatedValue }],
 				}}
 			>
@@ -88,4 +82,13 @@ const PlusOne = () => {
 
 export default PlusOne;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	animationWrapper: {
+		position: "absolute",
+	},
+	text: {
+		color: "#00D100",
+		fontSize: 35,
+		fontWeight: "bold",
+	},
+});

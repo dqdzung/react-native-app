@@ -4,6 +4,8 @@ import { View } from "native-base";
 import { Image as GifImage } from "expo-image";
 import { Sound } from "expo-av/build/Audio";
 import { Audio } from "expo-av";
+import TIMINGS from "@/constants/Timings";
+import PATHS from "@/constants/URLs";
 
 const GifSection = () => {
 	const [gallerySound, setGallerySound] = useState<Sound>();
@@ -25,21 +27,21 @@ const GifSection = () => {
 		return gallerySound
 			? () => {
 					gallerySound.unloadAsync();
-			}
+			  }
 			: undefined;
 	}, [gallerySound]);
 
 	return (
-		<View style={styles.gifContainer}>
+		<View style={styles.gifWrapper}>
 			<GifImage
-				source={PW_GIF}
+				source={PATHS.PW_GIF}
 				style={styles.image}
-				transition={IMAGE_TRANSITION}
+				transition={TIMINGS.IMAGE_TRANSITION}
 			/>
 			<GifImage
-				source={ME_GIF}
+				source={PATHS.ME_GIF}
 				style={styles.image}
-				transition={IMAGE_TRANSITION}
+				transition={TIMINGS.IMAGE_TRANSITION}
 			/>
 		</View>
 	);
@@ -52,7 +54,7 @@ const styles = StyleSheet.create({
 		aspectRatio: 1.65,
 		flex: 1,
 	},
-	gifContainer: {
+	gifWrapper: {
 		flexDirection: "row",
 		justifyContent: "space-between",
 		position: "absolute",
@@ -60,9 +62,3 @@ const styles = StyleSheet.create({
 		top: 210,
 	},
 });
-
-const PW_GIF =
-	"https://media.tenor.com/XsuhQTQ2WGUAAAAi/ace-attorney-phoenix-wright.gif";
-const ME_GIF =
-	"https://media.tenor.com/CvjsQ6ZKg0cAAAAi/pointing-edgeworth.gif";
-const IMAGE_TRANSITION = 200;

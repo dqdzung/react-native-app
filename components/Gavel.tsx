@@ -3,33 +3,35 @@ import React, { useRef } from "react";
 import gavelImg from "@/assets/images/AA-gavel.png";
 import baseImg from "@/assets/images/AA-base.png";
 import { Button, Image, View } from "native-base";
+import TIMINGS from "@/constants/Timings";
 
 const Gavel = ({ onFinish }: { onFinish: () => void }) => {
-	const animatedValue = useRef(new Animated.Value(-15)).current;
+	const animatedValue = useRef(
+		new Animated.Value(TIMINGS.GAVEL_START_POS)
+	).current;
 
 	const gavelUp = () => {
 		Animated.timing(animatedValue, {
-			toValue: -80,
-			duration: 70,
+			toValue: TIMINGS.GAVEL_FINISH_POS,
+			duration: TIMINGS.GAVEL_UP_DURATION,
 			useNativeDriver: false,
 		}).start(gavelDown);
 	};
 
 	const gavelDown = () => {
 		Animated.timing(animatedValue, {
-			toValue: -15,
-			duration: 10,
+			toValue: TIMINGS.GAVEL_START_POS,
+			duration: TIMINGS.GAVEL_DOWN_DURATION,
 			useNativeDriver: false,
 		}).start(onFinish);
 	};
 
 	return (
 		<>
-			<View style={{ alignItems: "center" }}>
+			<View style={styles.imageWrapper}>
 				<Animated.View
 					style={{
-						position: "relative",
-						zIndex: 3,
+						...styles.animationWrapper,
 						transform: [{ translateY: animatedValue }],
 					}}
 				>
@@ -53,6 +55,13 @@ const Gavel = ({ onFinish }: { onFinish: () => void }) => {
 export default Gavel;
 
 const styles = StyleSheet.create({
+	animationWrapper: {
+		position: "relative",
+		zIndex: 3,
+	},
+	imageWrapper: {
+		alignItems: "center",
+	},
 	button: {
 		width: 120,
 		borderRadius: 0,

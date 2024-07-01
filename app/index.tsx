@@ -1,16 +1,20 @@
 import { StyleSheet } from "react-native";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { View } from "native-base";
 import PlusOne from "@/components/PlusOne";
 import GifSection from "@/components/GifSection";
 import Gavel from "@/components/Gavel";
+import TIMINGS from "@/constants/Timings";
+import utils from "@/utils";
 
 const Home = () => {
 	const [arr, setArr] = useState<string[]>([]);
-	const [_, setTimer] = useState<number>(TIMER_COUNT);
+	const [_, setTimer] = useState<number>(TIMINGS.TIMER_COUNT);
 	const [init, setInit] = useState(false);
 
 	const isArguing = useMemo(() => init && arr.length === 0, [arr, init]);
+
+	const handleFinish = () => setArr((prev) => [...prev, utils.uuid()]);
 
 	useEffect(() => {
 		setTimeout(() => {
@@ -24,7 +28,7 @@ const Home = () => {
 			setTimer((prev) => {
 				if (prev === 0) {
 					setArr([]);
-					return TIMER_COUNT;
+					return TIMINGS.TIMER_COUNT;
 				} else {
 					return prev - 1;
 				}
@@ -41,7 +45,7 @@ const Home = () => {
 
 			{isArguing && <GifSection />}
 
-			<Gavel onFinish={() => setArr((prev) => [...prev, uuid()])} />
+			<Gavel onFinish={handleFinish} />
 		</View>
 	);
 };
@@ -55,13 +59,3 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 });
-
-const TIMER_COUNT = 2;
-
-const uuid = () => {
-	return "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-		const r = (Math.random() * 16) | 0;
-		const v = c === "x" ? r : (r & 0x3) | 0x8;
-		return v.toString(16);
-	});
-};
