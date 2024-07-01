@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Sound } from "expo-av/build/Audio";
 import { Audio } from "expo-av";
 import TIMINGS from "@/constants/Timings";
-import PATH from "@/constants/URLs";
 
 const PlusOne = () => {
 	const animatedValue = useRef(
@@ -14,7 +13,9 @@ const PlusOne = () => {
 	const [gavelSound, setGavelSound] = useState<Sound>();
 
 	const playSound = async () => {
-		const { sound } = await Audio.Sound.createAsync(require(PATH.GAVEL_SFX));
+		const { sound } = await Audio.Sound.createAsync(
+			require("@/assets/gavel-sfx.wav")
+		);
 		sound?.playAsync();
 		setGavelSound(sound);
 	};

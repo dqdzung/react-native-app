@@ -5,7 +5,7 @@ import { Image as GifImage } from "expo-image";
 import { Sound } from "expo-av/build/Audio";
 import { Audio } from "expo-av";
 import TIMINGS from "@/constants/Timings";
-import PATHS from "@/constants/URLs";
+import LINKS from "@/constants/URLs";
 
 const GifSection = () => {
 	const [gallerySound, setGallerySound] = useState<Sound>();
@@ -34,12 +34,12 @@ const GifSection = () => {
 	return (
 		<View style={styles.gifWrapper}>
 			<GifImage
-				source={PATHS.PW_GIF}
+				source={LINKS.PW_GIF}
 				style={styles.image}
 				transition={TIMINGS.IMAGE_TRANSITION}
 			/>
 			<GifImage
-				source={PATHS.ME_GIF}
+				source={LINKS.ME_GIF}
 				style={styles.image}
 				transition={TIMINGS.IMAGE_TRANSITION}
 			/>
