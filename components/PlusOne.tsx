@@ -1,7 +1,5 @@
 import { Animated, StyleSheet } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { Sound } from "expo-av/build/Audio";
-import { Audio } from "expo-av";
 import TIMINGS from "@/constants/Timings";
 
 const PlusOne = () => {
@@ -10,15 +8,6 @@ const PlusOne = () => {
 	).current;
 	const [appeared, setAppear] = useState(false);
 	const [fadeAnim] = useState(new Animated.Value(TIMINGS.HIDE));
-	const [gavelSound, setGavelSound] = useState<Sound>();
-
-	const playSound = async () => {
-		const { sound } = await Audio.Sound.createAsync(
-			require("@/assets/gavel-sfx.wav")
-		);
-		sound?.playAsync();
-		setGavelSound(sound);
-	};
 
 	const moveUp = () => {
 		Animated.timing(animatedValue, {
@@ -48,17 +37,9 @@ const PlusOne = () => {
 	const init = () => {
 		moveUp();
 		fadeIn();
-		playSound();
 	};
 
 	useEffect(() => init(), []);
-	useEffect(() => {
-		return gavelSound
-			? () => {
-					gavelSound.unloadAsync();
-			  }
-			: undefined;
-	}, [gavelSound]);
 
 	if (appeared) return null;
 
@@ -67,14 +48,12 @@ const PlusOne = () => {
 			style={{
 				...styles.animationWrapper,
 				opacity: appeared ? TIMINGS.HIDE : fadeAnim,
-			}}
-		>
+			}}>
 			<Animated.Text
 				style={{
 					...styles.text,
 					transform: [{ translateY: animatedValue }],
-				}}
-			>
+				}}>
 				+1
 			</Animated.Text>
 		</Animated.View>

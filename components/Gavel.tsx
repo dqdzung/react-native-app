@@ -25,6 +25,7 @@ const Gavel = ({ onFinish }: { onFinish: () => void }) => {
 			useNativeDriver: false,
 		}).start(onFinish);
 	};
+  
 
 	return (
 		<>

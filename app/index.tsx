@@ -6,15 +6,31 @@ import GifSection from "@/components/GifSection";
 import Gavel from "@/components/Gavel";
 import TIMINGS from "@/constants/Timings";
 import utils from "@/utils";
+import { Sound } from "expo-av/build/Audio";
+import { Audio } from "expo-av";
 
 const Home = () => {
 	const [arr, setArr] = useState<string[]>([]);
-	const [_, setTimer] = useState<number>(TIMINGS.TIMER_COUNT);
+	const [timer, setTimer] = useState<number>(TIMINGS.TIMER_COUNT);
 	const [init, setInit] = useState(false);
+	const [gavelSound, setGavelSound] = useState<Sound>();
 
 	const isArguing = useMemo(() => init && arr.length === 0, [arr, init]);
 
-	const handleFinish = () => setArr((prev) => [...prev, utils.uuid()]);
+	const playSound = async () => {
+		if (!gavelSound) {
+			const { sound } = await Audio.Sound.createAsync(
+				require("@/assets/gavel-sfx.wav")
+			);
+			sound?.playAsync();
+			setGavelSound(sound);
+		} else gavelSound.replayAsync();
+	};
+
+	const handleFinish = () => {
+		playSound();
+		setArr((prev) => [...prev, utils.uuid()]);
+	};
 
 	useEffect(() => {
 		setTimeout(() => {
@@ -36,6 +52,14 @@ const Home = () => {
 		}, 1000); //each count lasts for a second
 		return () => clearInterval(interval); //cleanup the interval on complete
 	}, [arr]);
+
+	useEffect(() => {
+		return gavelSound
+			? () => {
+					gavelSound.unloadAsync();
+			  }
+			: undefined;
+	}, [gavelSound]);
 
 	return (
 		<View style={styles.container}>
