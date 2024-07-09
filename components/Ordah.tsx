@@ -7,39 +7,37 @@ import { Audio } from "expo-av";
 import TIMINGS from "@/constants/Timings";
 import LINKS from "@/constants/URLs";
 
-const GifSection = () => {
-	const [gallerySound, setGallerySound] = useState<Sound>();
+const Ordah = ({ onFinish }: { onFinish?: () => void }) => {
+	const [voice, setVoice] = useState<Sound>();
 
 	const playSound = async () => {
 		const { sound } = await Audio.Sound.createAsync(
-			require("@/assets/gallery-sfx.wav")
+			require("@/assets/ordah-sfx.mp3")
 		);
-		sound?.setIsLoopingAsync(true);
-		sound?.playAsync();
-		setGallerySound(sound);
+		await sound?.playAsync();
+		setVoice(sound);
 	};
 
 	useEffect(() => {
 		playSound();
+		const timeout = setTimeout(() => {
+			onFinish?.();
+		}, 1600);
+		return () => clearTimeout(timeout);
 	}, []);
 
 	useEffect(() => {
-		return gallerySound
+		return voice
 			? () => {
-					gallerySound.unloadAsync();
+					voice.unloadAsync();
 			  }
 			: undefined;
-	}, [gallerySound]);
+	}, [voice]);
 
 	return (
 		<View style={styles.gifWrapper}>
 			<GifImage
-				source={LINKS.PW_GIF}
-				style={styles.image}
-				transition={TIMINGS.IMAGE_TRANSITION}
-			/>
-			<GifImage
-				source={LINKS.ME_GIF}
+				source={LINKS.ORDAH_GIF}
 				style={styles.image}
 				transition={TIMINGS.IMAGE_TRANSITION}
 			/>
@@ -47,7 +45,7 @@ const GifSection = () => {
 	);
 };
 
-export default GifSection;
+export default Ordah;
 
 const styles = StyleSheet.create({
 	image: {
@@ -55,10 +53,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	gifWrapper: {
-		flexDirection: "row",
-		justifyContent: "space-between",
 		position: "absolute",
 		width: "100%",
-		top: 170,
+		top: 100,
 	},
 });

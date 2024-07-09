@@ -9,9 +9,9 @@ import utils from "@/utils";
 import { Sound } from "expo-av/build/Audio";
 import { Audio } from "expo-av";
 
-const Home = () => {
+const AceAttorneyScreen = () => {
 	const [arr, setArr] = useState<string[]>([]);
-	const [timer, setTimer] = useState<number>(TIMINGS.TIMER_COUNT);
+	const [_, setTimer] = useState<number>(TIMINGS.TIMER_COUNT);
 	const [init, setInit] = useState(false);
 	const [gavelSound, setGavelSound] = useState<Sound>();
 
@@ -33,9 +33,10 @@ const Home = () => {
 	};
 
 	useEffect(() => {
-		setTimeout(() => {
+		const timeout = setTimeout(() => {
 			setInit(true);
 		}, 2000);
+		return () => clearTimeout(timeout);
 	}, []);
 
 	useEffect(() => {
@@ -74,10 +75,12 @@ const Home = () => {
 	);
 };
 
-export default Home;
+export default AceAttorneyScreen;
 
 const styles = StyleSheet.create({
 	container: {
+		// borderColor: 'red',
+		// borderWidth: 1,
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
